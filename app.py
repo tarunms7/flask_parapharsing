@@ -2,23 +2,13 @@ import re
 from flask import Flask,request
 import os
 import sys
-# from parrot import Parrot
 import torch
 import warnings
 import json
 from flask_cors import CORS,cross_origin
 from operator import ge
-import torch
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
-warnings.filterwarnings("ignore")
 
-# PROJECT_ROOT = os.path.abspath(os.path.join(
-#                   os.path.dirname(__file__), 
-#                   os.pardir)
-# )
-# sys.path.append(PROJECT_ROOT)
-# # import utils
-# parrot = Parrot(model_tag="prithivida/parrot_paraphraser_on_T5", use_gpu=True)
 
 model_name = 'tuner007/pegasus_paraphrase'
 torch_device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -46,39 +36,14 @@ CORS(app)
 @cross_origin() 
 def hello():
   return "<h1>Hello World </h1>"
-
+@cross_origin() 
 @app.route("/test", methods = ["GET","POST"])
 def test():
+  print("called test")
   if request.method == "POST":
-    # return "Post request received"
-    print("post request received")
-    data = request.get_json(force = True)
+    data = request.get_json(force=True)
     text= data["input"]
-    # output = {}
-    # print("-"*100)
-    # print("Input_phrase: ", phrases)
-    # print("-"*100)
-    # count = 1
-    # for phrase in phrases:
-    #   if phrase == "":
-    #     continue
-    #   phrase = phrase+"."
-    #   print("phrase after adding the dot : ",phrase)
-    #   para_phrases = parrot.augment(
-    #     input_phrase=phrase,
-    #     use_gpu=False,
-    #     do_diverse=True, 
-    #     adequacy_threshold = 0.8, 
-    #     fluency_threshold = 0.8
-    #   )
-    #   output[count] = []
-    #   output[count] = para_phrases
-    #   count+=1
-    # print(output)
-    # print(type(output))
-
-
-
+    print(text)
     inp = text.split(".")
     output = {}
     count = 1
@@ -91,10 +56,8 @@ def test():
 
     return json_object
   else:
-    print("get request received")
-    
     return "<h1>Data is sent <h1>"
-    # return "Get request received"
 
+ 
 if __name__ == "__main__":
-  app.run(debug = True)
+  app.run(host = '0.0.0.0',port=4000, debug=True)
